@@ -113,6 +113,21 @@ If no process has been started, or if it was not started using
                 (read-from-minibuffer "Path: ")))
   (indium-nodejs--connect host port path))
 
+(defun indium-connect-nodejs-to-url (url)
+  "Connect to a node process with a given URL."
+  (let* ((parsed-url (url-generic-parse-url url))
+         (host (url-host parsed-url))
+         (port (or (url-port parsed-url) "9229"))
+         (path (seq-drop (car (url-path-and-query parsed-url)) 1)))
+    (indium-nodejs--connect host port path)))
+
+;;;###autoload
+(defun indium-connect-nodejs-with-url (url)
+  "Connect to a node process with a given URL."
+  (interactive
+   (list (read-from-minibuffer "Url: ")))
+  (indium-connect-nodejs-to-url url))
+
 (defun indium-nodejs--connect (host port path &optional process)
   "Ask the user for a websocket url HOST:PORT/PATH and connects to it.
 When PROCESS is non-nil, attach it to the connection."
